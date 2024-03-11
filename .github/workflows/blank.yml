@@ -11,7 +11,7 @@ jobs:
 
     env:
       UPSTREAM_REPO: https://github.com/aazooo/zjmf.git
-      TARGET_BRANCH: main
+      TARGET_BRANCH: master
       USERNAME_PLACEHOLDER: aazooo
       YOUR_USERNAME: feiyu201
 
