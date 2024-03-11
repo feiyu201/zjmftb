@@ -38,6 +38,6 @@ jobs:
       run: |
         git add README.md
         git commit -m "使用我的用户名更新 README.md"
-        git push https://$GITHUB_ACTOR:$PAT_TOKEN@github.com/$GITHUB_REPOSITORY.git HEAD:$GITHUB_REF
+        git push https://$USER_GITHUB_ACTOR:$PAT_TOKEN@github.com/$GITHUB_REPOSITORY.git HEAD:$GITHUB_REF
       env:
         PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
