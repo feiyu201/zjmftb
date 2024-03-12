@@ -1,43 +1,44 @@
-name: 自动同步和更新 README
+name: 同步仓库
 
 on:
   schedule:
-    - cron: '0 1 * * *'
-  workflow_dispatch:
+    - cron: '0 1 * * *' # 按UTC时间每天凌晨1点执行
+  workflow_dispatch: # 允许手动触发
 
 jobs:
-  sync:
+  同步任务:
     runs-on: ubuntu-latest
-
-    env:
-      UPSTREAM_REPO: https://github.com/aazooo/zjmf.git
-      TARGET_BRANCH: main
-      USERNAME_PLACEHOLDER: aazooo
-      YOUR_USERNAME: feiyu201
-
     steps:
-    - name: 检出仓库
+    - name: 检出基础仓库
       uses: actions/checkout@v2
+      with:
+        repository: aazooo/zjmf.git
+        token: ${{ secrets.PAT_TOKEN }}
+        fetch-depth: 0 # 获取全部历史以便比较
 
-    - name: 设置 Git 用户信息
+    - name: 创建新分支
       run: |
-        git config --global user.email "5107019@qq.com"
-        git config --global user.name "feiyu201"
+        git checkout -b new-branch
 
-    - name: 同步上游仓库
+    - name: 检查变动
+      id: changes
       run: |
-        git remote add upstream $UPSTREAM_REPO
-        git fetch upstream
-        git merge upstream/$TARGET_BRANCH --allow-unrelated-histories -m "合并上游更改"
-        git push
+        git fetch origin
+        CHANGES=$(git diff --name-only origin/master...master)
+        if [ -n "$CHANGES" ]; then
+          echo "::set-output name=has_changes::true"
+        else
+          echo "::set-output name=has_changes::false"
+        fi
 
-    - name: 在 README.md 中替换 $USERNAME_PLACEHOLDER 为 $YOUR_USERNAME
-      run: sed -i "s/$USERNAME_PLACEHOLDER/$YOUR_USERNAME/g" README.md
-
-    - name: 提交并推送更改到你的仓库
+    - name: 同步并推送变动
+      if: steps.changes.outputs.has_changes == 'true'
       run: |
-        git add README.md
-        git commit -m "使用我的用户名更新 README.md"
-        git push https://$USER_GITHUB_ACTOR:$PAT_TOKEN@github.com/$GITHUB_REPOSITORY.git HEAD:$GITHUB_REF
-      env:
-        PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+        git config user.name ${{ secrets.USER_NAME }}
+        git config user.email ${{ secrets.USER_EMAIL }}
+        git remote set-url origin ${{ github.event.repository.clone_url }}
+        git remote add upstream https://github.com/aazooo/zjmf.git
+        git pull upstream master
+        sed -i 's/aazooo/feiyu201/g' README.md
+        git commit -am "同步变动并更新README"
+        git push --set-upstream origin new-branch
