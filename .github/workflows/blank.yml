@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # 允许手动触发
 
 jobs:
-  同步任务:
+  sync-task: # 同步任务
     runs-on: ubuntu-latest
     steps:
     - name: 检出基础仓库
@@ -21,7 +21,7 @@ jobs:
         git checkout -b new-branch
 
     - name: 检查变动
-      id: changes
+      id: check-changes # 检查变动
       run: |
         git fetch origin
         CHANGES=$(git diff --name-only origin/master...master)
@@ -32,7 +32,7 @@ jobs:
         fi
 
     - name: 同步并推送变动
-      if: steps.changes.outputs.has_changes == 'true'
+      if: steps.check-changes.outputs.has_changes == 'true'
       run: |
         git config user.name ${{ secrets.USER_NAME }}
         git config user.email ${{ secrets.USER_EMAIL }}
