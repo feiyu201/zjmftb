@@ -34,11 +34,13 @@ def check_update():
             new_branch_name = f"update_{last_updated_at.strftime('%Y%m%d_%H%M%S')}"
             print(f"Creating new branch: {new_branch_name}")
             repo.git.checkout('-b', new_branch_name)
-            print("Pulling changes from remote repository...")
+            print("Fetching changes from remote repository...")
             if 'GH_TOKEN' in os.environ:
-                repo.remotes.origin.pull(headers=headers)
+                repo.remotes.origin.fetch(headers=headers)
             else:
-                repo.remotes.origin.pull()
+                repo.remotes.origin.fetch()
+            print("Merging changes into current branch...")
+            repo.git.merge('origin/master')
             repo.git.push('--set-upstream', 'origin', new_branch_name)
             print(f"Repository updated. New branch created: {new_branch_name}")
         else:
