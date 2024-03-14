@@ -9,7 +9,7 @@ GITHUB_API_URL = "https://api.github.com/repos/aazooo/zjmf"
 REPO_PATH = "zjmftb"  # 本地库路径
 
 def check_update():
-    # 发送GET请求获取最后更新时间
+    # 发送 GET 请求获取最后更新时间
     headers = {}
     if 'GH_TOKEN' in os.environ:
         headers["Authorization"] = f"token {os.environ['GH_TOKEN']}"
@@ -25,7 +25,7 @@ def check_update():
         # 打开本地库
         repo = Repo(REPO_PATH)
         
-        # 获取本地库的最后提交时间并转换为UTC时间
+        # 获取本地库的最后提交时间并转换为 UTC 时间
         last_commit = repo.head.commit.committed_datetime.replace(tzinfo=pytz.utc)
         
         # 检查是否有更新
@@ -36,7 +36,7 @@ def check_update():
             repo.git.checkout('-b', new_branch_name)
             print("Pulling changes from remote repository...")
             if 'GH_TOKEN' in os.environ:
-                # 设置GitHub用户名
+                # 设置 GitHub 用户名
                 os.environ['GIT_USERNAME'] = 'feiyu201'
                 os.environ['GIT_ASKPASS'] = 'git_askpass.sh'
                 with open('git_askpass.sh', 'w') as f:
