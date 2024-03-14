@@ -1,26 +1,25 @@
-name: Check for updates
+name: 检查更新
 
 on:
   schedule:
     - cron: "0 23 * * *"
-  workflow_dispatch:
+  workflow_dispatch:  # 允许手动触发执行
 
 jobs:
   check_update:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: 检出仓库内容
         uses: actions/checkout@v2
 
-      - name: Set up Python
+      - name: 设置Python环境
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
-        run: pip install requests gitpython
+      - name: 安装依赖
+        run: pip install pytz requests gitpython
 
-      - name: Check for updates and sync
-        run: |
-          python check_update.py
+      - name: 运行Python脚本
+        run: python check_update.py
