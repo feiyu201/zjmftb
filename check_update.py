@@ -10,7 +10,10 @@ REPO_PATH = "zjmf"  # 本地库路径
 
 def check_update():
     # 发送GET请求获取最后更新时间
-    response = requests.get(GITHUB_API_URL)
+    headers = {}
+    if 'GH_TOKEN' in os.environ:
+        headers["Authorization"] = f"token {os.environ['GH_TOKEN']}"
+    response = requests.get(GITHUB_API_URL, headers=headers)
     if response.status_code == 200:
         repo_info = response.json()
         last_updated_at = datetime.strptime(repo_info['updated_at'], '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.utc)
@@ -32,7 +35,10 @@ def check_update():
             print(f"Creating new branch: {new_branch_name}")
             repo.git.checkout('-b', new_branch_name)
             print("Pulling changes from remote repository...")
-            repo.remotes.origin.pull()
+            if 'GH_TOKEN' in os.environ:
+                repo.remotes.origin.pull(headers=headers)
+            else:
+                repo.remotes.origin.pull()
             repo.git.push('--set-upstream', 'origin', new_branch_name)
             print(f"Repository updated. New branch created: {new_branch_name}")
         else:
