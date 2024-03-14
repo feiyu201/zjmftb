@@ -6,7 +6,7 @@ import pytz
 
 # GitHub API 相关信息
 GITHUB_API_URL = "https://api.github.com/repos/aazooo/zjmf"
-REPO_PATH = "zjmf"  # 本地库路径
+REPO_PATH = "zjmftb"  # 本地库路径
 
 def check_update():
     # 发送GET请求获取最后更新时间
@@ -34,17 +34,15 @@ def check_update():
             new_branch_name = f"update_{last_updated_at.strftime('%Y%m%d_%H%M%S')}"
             print(f"Creating new branch: {new_branch_name}")
             repo.git.checkout('-b', new_branch_name)
-            print("Fetching changes from remote repository...")
+            print("Pulling changes from remote repository...")
             if 'GH_TOKEN' in os.environ:
                 os.environ['GIT_ASKPASS'] = 'git_askpass.sh'
                 with open('git_askpass.sh', 'w') as f:
                     f.write(f'echo "{os.environ["GH_TOKEN"]}"')
-                repo.remotes.origin.fetch()
+                repo.remotes.origin.pull()
                 os.remove('git_askpass.sh')
             else:
-                repo.remotes.origin.fetch()
-            print("Merging changes into current branch...")
-            repo.git.merge('origin/master')
+                repo.remotes.origin.pull()
             repo.git.push('--set-upstream', 'origin', new_branch_name)
             print(f"Repository updated. New branch created: {new_branch_name}")
         else:
