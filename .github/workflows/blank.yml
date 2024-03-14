@@ -36,7 +36,7 @@ jobs:
       run: |
         git config user.name ${{ secrets.USER_NAME }}
         git config user.email ${{ secrets.USER_EMAIL }}
-        git remote set-url origin ${{ github.event.repository.clone_url }}
+        git remote set-url origin ${{ github.repository }}
         git remote add upstream https://github.com/aazooo/zjmf.git
         git pull upstream master
         sed -i 's/aazooo/feiyu201/g' README.md
