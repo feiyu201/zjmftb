@@ -39,10 +39,10 @@ def check_update():
                 os.environ['GIT_ASKPASS'] = 'git_askpass.sh'
                 with open('git_askpass.sh', 'w') as f:
                     f.write(f'echo "{os.environ["GH_TOKEN"]}"')
-                repo.git.pull()
+                repo.git.pull('origin', 'main')
                 os.remove('git_askpass.sh')
             else:
-                repo.git.pull()
+                repo.git.pull('origin', 'main')
             repo.git.push('--set-upstream', 'origin', new_branch_name)
             print(f"Repository updated. New branch created: {new_branch_name}")
         else:
