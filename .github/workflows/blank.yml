@@ -1,25 +1,27 @@
-name: 检查更新
+name: Check for updates
 
 on:
   schedule:
     - cron: "0 23 * * *"
-  workflow_dispatch:  # 允许手动触发执行
+  workflow_dispatch:
 
 jobs:
   check_update:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 检出仓库内容
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: 设置Python环境
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
 
-      - name: 安装依赖
+      - name: Install dependencies
         run: pip install pytz requests gitpython
 
-      - name: 运行Python脚本
+      - name: Run Python script
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}  # 从机密存储中获取令牌
         run: python check_update.py
