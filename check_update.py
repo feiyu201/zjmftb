@@ -36,7 +36,11 @@ def check_update():
             repo.git.checkout('-b', new_branch_name)
             print("Fetching changes from remote repository...")
             if 'GH_TOKEN' in os.environ:
-                repo.remotes.origin.fetch(headers=headers)
+                os.environ['GIT_ASKPASS'] = 'git_askpass.sh'
+                with open('git_askpass.sh', 'w') as f:
+                    f.write(f'echo "{os.environ["GH_TOKEN"]}"')
+                repo.remotes.origin.fetch()
+                os.remove('git_askpass.sh')
             else:
                 repo.remotes.origin.fetch()
             print("Merging changes into current branch...")
