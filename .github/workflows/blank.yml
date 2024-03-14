@@ -36,9 +36,10 @@ jobs:
       run: |
         git config user.name ${{ secrets.USER_NAME }}
         git config user.email ${{ secrets.USER_EMAIL }}
-        git remote set-url origin ${{ github.repository }}
         git remote add upstream https://github.com/aazooo/zjmf.git
-        git pull upstream master
+        git fetch upstream
+        git checkout new-branch
+        git merge upstream/master
         sed -i 's/aazooo/feiyu201/g' README.md
         git commit -am "同步变动并更新README"
         git push --set-upstream origin new-branch
