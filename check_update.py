@@ -36,6 +36,8 @@ def check_update():
             repo.git.checkout('-b', new_branch_name)
             print("Pulling changes from remote repository...")
             if 'GH_TOKEN' in os.environ:
+                # 设置GitHub用户名
+                os.environ['GIT_USERNAME'] = 'feiyu201'
                 os.environ['GIT_ASKPASS'] = 'git_askpass.sh'
                 with open('git_askpass.sh', 'w') as f:
                     f.write(f'echo "{os.environ["GH_TOKEN"]}"')
