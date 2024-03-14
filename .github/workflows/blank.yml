@@ -23,5 +23,5 @@ jobs:
 
       - name: Run Python script
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}  # 从机密存储中获取令牌
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}  # 从机密存储中获取令牌
         run: python check_update.py
