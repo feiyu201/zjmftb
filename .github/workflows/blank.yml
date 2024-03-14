@@ -41,4 +41,3 @@ jobs:
         sed -i 's/aazooo/feiyu201/g' README.md
         git commit -am "同步变动并更新README"
         git push --set-upstream origin new-branch
-  看看哪里代码有问题
